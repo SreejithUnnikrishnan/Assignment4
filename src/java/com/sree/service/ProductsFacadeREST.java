@@ -35,14 +35,15 @@ public class ProductsFacadeREST extends AbstractFacade<Products> {
 
     @POST
     @Override
-    @Consumes({"application/xml", "application/json"})
+    @Consumes("application/json")
     public void create(Products entity) {
         super.create(entity);
     }
-
+    
+    
     @PUT
     @Path("{id}")
-    @Consumes({"application/xml", "application/json"})
+    @Consumes("application/json")
     public void edit(@PathParam("id") Integer id, Products entity) {
         super.edit(entity);
     }
