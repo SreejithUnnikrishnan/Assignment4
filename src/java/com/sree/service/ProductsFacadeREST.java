@@ -6,6 +6,11 @@
 package com.sree.service;
 
 import com.sree.Products;
+import com.sree.database.DatabaseConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -18,6 +23,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -38,6 +44,24 @@ public class ProductsFacadeREST extends AbstractFacade<Products> {
     @Consumes("application/json")
     public void create(Products entity) {
         super.create(entity);
+        int id = getId("select max(product_id) from products");
+        
+    }
+    
+    private int getId(String query) {
+        int id = 0;
+        //String jsonArray = null;      
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                id = rs.getInt(1);
+            }
+            
+        } catch (SQLException ex) {
+            System.out.println("Exception in getting database connection: " + ex.getMessage());
+        }
+        return id;
     }
     
     
