@@ -44,11 +44,12 @@ public class ProductsFacadeREST extends AbstractFacade<Products> {
 
     @POST
     @Consumes("application/json")
-    public Response doPost(Products entity) {
+    public String doPost(Products entity) {
         super.create(entity);
         int id = getId("select max(product_id) from products");
-        URI uri = UriBuilder.fromUri("http://localhost:8080/Assignment4/webresources/products/" + id).build();
-        return Response.temporaryRedirect(uri).build();
+        String url = "http://localhost:8080/Assignment4/webresources/products/" + id;
+        return url;
+        
     }
     
     private int getId(String query) {
