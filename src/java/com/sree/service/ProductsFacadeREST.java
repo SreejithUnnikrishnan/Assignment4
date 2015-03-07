@@ -7,6 +7,7 @@ package com.sree.service;
 
 import com.sree.Products;
 import com.sree.database.DatabaseConnection;
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,6 +24,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 
 
 /**
@@ -40,12 +43,12 @@ public class ProductsFacadeREST extends AbstractFacade<Products> {
     }
 
     @POST
-    @Override
     @Consumes("application/json")
-    public void create(Products entity) {
+    public Response doPost(Products entity) {
         super.create(entity);
         int id = getId("select max(product_id) from products");
-        
+        URI uri = UriBuilder.fromUri("http://localhost:8080/Assignment4/webresources/products/" + id).build();
+        return Response.temporaryRedirect(uri).build();
     }
     
     private int getId(String query) {
