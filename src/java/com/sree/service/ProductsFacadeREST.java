@@ -7,7 +7,6 @@ package com.sree.service;
 
 import com.sree.Products;
 import com.sree.database.DatabaseConnection;
-import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,8 +23,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
+
 
 
 /**
@@ -47,6 +45,7 @@ public class ProductsFacadeREST extends AbstractFacade<Products> {
     public String doPost(Products entity) {
         super.create(entity);
         int id = getId("select max(product_id) from products");
+        id = id +1;
         String url = "http://localhost:8080/Assignment4/webresources/products/" + id;
         return url;
         
@@ -72,9 +71,11 @@ public class ProductsFacadeREST extends AbstractFacade<Products> {
     @PUT
     @Path("{id}")
     @Consumes("application/json")
-    public void edit(@PathParam("id") String id, Products entity) {
+    public String edit(@PathParam("id") String id, Products entity) {
         //super.edit(entity);
         int change = doUpdate("UPDATE PRODUCTS SET name = ?, description = ?, quantity = ? WHERE PRODUCT_ID = ?", entity.getName(), entity.getDescription(), Integer.toString(entity.getQuantity()), id);
+        String url = "http://localhost:8080/Assignment4/webresources/products/" + id;
+        return url; 
     }
     private int doUpdate(String query, String... params) {
         int numChanges = 0;
