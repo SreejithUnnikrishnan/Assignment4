@@ -23,7 +23,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
+
 
 /**
  *
@@ -68,8 +68,22 @@ public class ProductsFacadeREST extends AbstractFacade<Products> {
     @PUT
     @Path("{id}")
     @Consumes("application/json")
-    public void edit(@PathParam("id") Integer id, Products entity) {
-        super.edit(entity);
+    public void edit(@PathParam("id") String id, Products entity) {
+        //super.edit(entity);
+        int change = doUpdate("UPDATE PRODUCTS SET name = ?, description = ?, quantity = ? WHERE PRODUCT_ID = ?", entity.getName(), entity.getDescription(), Integer.toString(entity.getQuantity()), id);
+    }
+    private int doUpdate(String query, String... params) {
+        int numChanges = 0;
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            for (int i = 1; i <= params.length; i++) {
+                pstmt.setString(i, params[i - 1]);
+            }
+            numChanges = pstmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println("Error in Updating...: " + ex.getMessage());;
+        }
+        return numChanges;
     }
 
     @DELETE
