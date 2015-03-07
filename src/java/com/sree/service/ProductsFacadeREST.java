@@ -24,8 +24,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-
-
 /**
  *
  * @author Sreejith
@@ -33,6 +31,7 @@ import javax.ws.rs.Produces;
 @Stateless
 @Path("products")
 public class ProductsFacadeREST extends AbstractFacade<Products> {
+
     @PersistenceContext(unitName = "Assignment4PU")
     private EntityManager em;
 
@@ -45,12 +44,12 @@ public class ProductsFacadeREST extends AbstractFacade<Products> {
     public String doPost(Products entity) {
         super.create(entity);
         int id = getId("select max(product_id) from products");
-        id = id +1;
+        id = id + 1;
         String url = "http://localhost:8080/Assignment4/webresources/products/" + id;
         return url;
-        
+
     }
-    
+
     private int getId(String query) {
         int id = 0;
         //String jsonArray = null;      
@@ -60,14 +59,13 @@ public class ProductsFacadeREST extends AbstractFacade<Products> {
             while (rs.next()) {
                 id = rs.getInt(1);
             }
-            
+
         } catch (SQLException ex) {
             System.out.println("Exception in getting database connection: " + ex.getMessage());
         }
         return id;
     }
-    
-    
+
     @PUT
     @Path("{id}")
     @Consumes("application/json")
@@ -75,8 +73,9 @@ public class ProductsFacadeREST extends AbstractFacade<Products> {
         //super.edit(entity);
         int change = doUpdate("UPDATE PRODUCTS SET name = ?, description = ?, quantity = ? WHERE PRODUCT_ID = ?", entity.getName(), entity.getDescription(), Integer.toString(entity.getQuantity()), id);
         String url = "http://localhost:8080/Assignment4/webresources/products/" + id;
-        return url; 
+        return url;
     }
+
     private int doUpdate(String query, String... params) {
         int numChanges = 0;
         try (Connection conn = DatabaseConnection.getConnection()) {
@@ -129,5 +128,5 @@ public class ProductsFacadeREST extends AbstractFacade<Products> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
